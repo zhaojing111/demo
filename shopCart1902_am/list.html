@@ -1,0 +1,97 @@
+xx<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="main.css" />
+		<script src="jquery.min.js"></script>
+		<style>
+			.header{
+				height: 40px;
+				width: 900px;
+				margin: 0 auto 50px;
+			}
+		</style>
+	</head>
+	<body>		 
+		<div class="header">
+			<span id="s"><a href="login.html">登录 / 注册</a></span>
+			<span id="s1">
+			</span>
+		</div>
+		<div class="nav clearfix">
+			<!--<span>小米手机</span>-->
+		</div>		
+		<ul class="shoplist clearfix">
+			<!--<li>
+				<a href="page.html">
+					<img src="img/1.jpg" alt="" />
+					<p>小米1</p>
+					<p>890</p>
+				</a>
+				<button>加入购物车</button>
+			</li>-->
+		</ul>	
+	</body>
+</html>
+<script type="text/javascript">
+ 	window.onload = function(){
+ 		//第一步 ： 获取服务器上的数据
+ 		let deffered = $.ajax({
+ 			type:"get",
+ 			url:"data.json?_id="+new Date().getTime(),
+ 			async:true
+ 		});
+ 		deffered.done(function(json){
+ 			let titleStr = "";
+ 			let proList = [];
+ 			let contStr = "";
+ 			for( let attr in json ){
+ 				titleStr += `<span classify=${attr}>${ json[attr].name }</span>`;
+ 				proList = json[attr].list;
+ 				if( proList ){
+	 				for( let i = 0 ; i < proList.length ; i++ ){
+	 					let pro = proList[i];
+	 					contStr += `<li>
+									<a href="page.html?pid=${pro.id}&classify=${attr}">
+										<img src="img/${pro.src}" alt="" />
+										<p>${pro.name}</p>
+										<p>${pro.price}</p>
+									</a>
+									<button>加入购物车</button>
+								</li>`
+	 				}
+ 				}
+ 			}
+ 			
+ 			//显示标题内容
+ 			$(".nav").html( titleStr );
+ 			//显示内容列表
+ 			$(".shoplist").html( contStr );
+ 			
+ 			
+ 			//为商品类别标题添加鼠标移入事件  实现选项卡功能
+ 			$(".nav").on("mouseenter" , "span" , function(){
+ 				//获取当前操作的商品类别名称 id
+ 				let classify = $(this).attr("classify");
+ 				let proList = json[classify].list;
+ 				let strCon = "";
+ 				for( let i = 0 ; i < proList.length ; i++ ){
+ 					let pro = proList[i];
+ 					strCon += `<li>
+									<a href="page.html?pid=${pro.id}&classify=${classify}">
+										<img src="img/${pro.src}" alt="" />
+										<p>${pro.name}</p>
+										<p>${pro.price}</p>
+									</a>
+									<button>加入购物车</button>
+								</li>`
+ 				}
+ 				//显示对应内容列表
+ 				$(".shoplist").html( strCon );
+ 			})
+ 		})
+ 	
+ 		
+ 	}
+</script>
